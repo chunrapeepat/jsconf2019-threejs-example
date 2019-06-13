@@ -1,7 +1,9 @@
 import React, {useEffect} from "react";
 import * as THREE from "three";
 import styled from "styled-components";
+
 import {createBoxGeometry} from "../utils/creator";
+import {random} from "../utils/math";
 
 const Canvas = styled.div`
   width: 100vw;
@@ -22,11 +24,9 @@ const EndlessBackground = () => {
     scene = new THREE.Scene();
 
     // Create Camera
-    camera = new THREE.PerspectiveCamera(75, width / height, 1, 100);
+    camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 50);
 
-    camera.position.x = 2;
-    camera.position.y = 2;
-    camera.position.z = 2;
+    camera.position.y = 5;
 
     camera.updateProjectionMatrix();
 
@@ -38,17 +38,26 @@ const EndlessBackground = () => {
     renderEl.appendChild(renderer.domElement);
 
     // Add Hemisphere Light
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+    directionalLight.position.set(-5, 10, -5);
+    directionalLight.castShadow = true;
+    scene.add(directionalLight);
+
     const light = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
     scene.add(light);
 
     // Create Ground
-    scene.add(
-      createBoxGeometry({
-        position: [0, 0, 0],
-        size: [1, 1, 1],
-        color: 0x00ff00,
-      }),
-    );
+    for (let x = -100; x <= 100; x++) {
+      for (let z = -100; z <= 100; z++) {
+        scene.add(
+          createBoxGeometry({
+            position: [x * 0.2, Math.random() * 3, z * 0.2],
+            size: [0.2, Math.random() * 5, 0.2],
+            color: new THREE.Color(`hsl(${random(0, 360)}, 100%, 60%)`),
+          }),
+        );
+      }
+    }
 
     // Render!
     render();
