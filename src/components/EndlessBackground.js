@@ -3,18 +3,67 @@ import * as THREE from "three";
 import styled from "styled-components";
 
 import {createBoxGeometry} from "../utils/creator";
-import {random} from "../utils/math";
 
 const Canvas = styled.div`
   width: 100vw;
   height: 100vh;
 `;
 
+const calculateLength = (x, z, t = 0) => {
+  return (Math.cos(x / 5 + t) + Math.sin(z / 5 + t)) / 2;
+};
+
+const normalizeHsl = length => {
+  return length * 90 + 90;
+};
+
 const EndlessBackground = () => {
   let renderEl;
-  let scene, camera, renderer;
+  let time = 0;
+  let scene, camera, renderer, boxes;
 
   const render = () => renderer.render(scene, camera);
+
+  const renderGround = () => {
+    const boxes = [];
+
+    for (let x = -40; x <= 40; x++) {
+      for (let z = -40; z <= 40; z++) {
+        const length = calculateLength(x, z);
+
+        const box = createBoxGeometry({
+          position: [x * 0.2, length * 2, z * 0.2],
+          size: [0.2, 1, 0.2],
+          color: new THREE.Color(
+            `hsl(${normalizeHsl(Math.abs(length))}, 100%, 60%)`,
+          ),
+        });
+
+        scene.add(box);
+        boxes.push(box);
+      }
+    }
+
+    return boxes;
+  };
+
+  const updateGround = () => {
+    boxes.forEach(box => {
+      const {x, z} = box.position;
+
+      const length = calculateLength(x / 0.2, z / 0.2, time / 50);
+
+      box.position.y = length * 2;
+    });
+  };
+
+  const animate = () => {
+    render();
+    requestAnimationFrame(animate);
+
+    time += 1;
+    updateGround();
+  };
 
   useEffect(() => {
     const width = renderEl.clientWidth;
@@ -26,7 +75,8 @@ const EndlessBackground = () => {
     // Create Camera
     camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 50);
 
-    camera.position.y = 5;
+    camera.position.y = 3;
+    camera.rotation.x = -Math.PI / 6;
 
     camera.updateProjectionMatrix();
 
@@ -38,29 +88,19 @@ const EndlessBackground = () => {
     renderEl.appendChild(renderer.domElement);
 
     // Add Hemisphere Light
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(-5, 10, -5);
     directionalLight.castShadow = true;
     scene.add(directionalLight);
 
-    const light = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
-    scene.add(light);
+    // Create Fog
+    scene.fog = new THREE.Fog("black", 1, 7);
 
-    // Create Ground
-    for (let x = -100; x <= 100; x++) {
-      for (let z = -100; z <= 100; z++) {
-        scene.add(
-          createBoxGeometry({
-            position: [x * 0.2, Math.random() * 3, z * 0.2],
-            size: [0.2, Math.random() * 5, 0.2],
-            color: new THREE.Color(`hsl(${random(0, 360)}, 100%, 60%)`),
-          }),
-        );
-      }
-    }
+    // Render Ground
+    boxes = renderGround();
 
     // Render!
-    render();
+    requestAnimationFrame(animate);
   }, []);
 
   return <Canvas ref={mount => (renderEl = mount)}></Canvas>;
