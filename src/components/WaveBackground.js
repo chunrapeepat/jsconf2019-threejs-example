@@ -17,7 +17,7 @@ const normalizeHsl = length => {
   return length * 90 + 90;
 };
 
-const EndlessBackground = () => {
+const WaveBackground = () => {
   let renderEl;
   let time = 0;
   let scene, camera, renderer, boxes;
@@ -106,4 +106,4 @@ const EndlessBackground = () => {
   return <Canvas ref={mount => (renderEl = mount)}></Canvas>;
 };
 
-export default EndlessBackground;
+export default WaveBackground;

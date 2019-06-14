@@ -1,6 +1,6 @@
 import React from "react";
 import {createGlobalStyle} from "styled-components";
-import EndlessBackground from "./components/EndlessBackground";
+import WaveBackground from "./components/WaveBackground";
 
 const GlobalStyle = createGlobalStyle`
   html, body {
@@ -14,7 +14,7 @@ function App() {
     <>
       <GlobalStyle />
 
-      <EndlessBackground />
+      <WaveBackground />
     </>
   );
 }
