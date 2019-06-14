@@ -8,6 +8,10 @@ const Container = styled.div`
   left: 50%;
 
   transform: translateX(-50%) translateY(-50%);
+
+  @media (max-width: 600px) {
+    width: 90vw;
+  }
 `;
 
 const Heading = styled.h1`
@@ -16,6 +20,10 @@ const Heading = styled.h1`
   font-family: "Doppio One", sans-serif;
 
   margin: 0;
+
+  @media (max-width: 600px) {
+    font-size: 2.5em;
+  }
 `;
 
 const Description = styled.p`
@@ -24,6 +32,22 @@ const Description = styled.p`
   font-family: "Doppio One", sans-serif;
 
   margin: 0;
+
+  @media (max-width: 600px) {
+    font-size: 1.4em;
+  }
+`;
+
+const Author = styled.a`
+  color: white;
+  display: block;
+  text-decoration: none;
+
+  font-size: 1.2em;
+  font-weight: lighter;
+  font-family: sans-serif;
+
+  margin-top: 30px;
 `;
 
 const HeaderText = () => {
@@ -31,6 +55,10 @@ const HeaderText = () => {
     <Container>
       <Heading>JSConf.Asia 2019</Heading>
       <Description>Example of THREE.js with React.js</Description>
+
+      <Author href="https://thechun.xyz" target="_blank">
+        By Chun Rapeepat
+      </Author>
     </Container>
   );
 };
