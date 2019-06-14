@@ -1,5 +1,7 @@
 import React from "react";
 import {createGlobalStyle} from "styled-components";
+
+import HeaderText from "./components/HeaderText";
 import WaveBackground from "./components/WaveBackground";
 
 const GlobalStyle = createGlobalStyle`
@@ -14,6 +16,7 @@ function App() {
     <>
       <GlobalStyle />
 
+      <HeaderText />
       <WaveBackground />
     </>
   );
