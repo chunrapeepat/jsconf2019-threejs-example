@@ -13,6 +13,7 @@ const calculateLength = (x, z, t = 0) => {
   return (Math.cos(x / 5 + t) + Math.sin(z / 5 + t)) / 2;
 };
 
+// Green to Blue Color normalize
 const normalizeHsl = length => {
   return length * 90 + 90;
 };
@@ -51,9 +52,7 @@ const WaveBackground = () => {
     boxes.forEach(box => {
       const {x, z} = box.position;
 
-      const length = calculateLength(x / 0.2, z / 0.2, time / 50);
-
-      box.position.y = length * 2;
+      box.position.y = calculateLength(x / 0.2, z / 0.2, time / 50) * 2;
     });
   };
 
