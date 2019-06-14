@@ -21,6 +21,8 @@ const normalizeHsl = length => {
 const WaveBackground = () => {
   let renderEl;
   let time = 0;
+
+  let width, height;
   let scene, camera, renderer, boxes;
 
   const render = () => renderer.render(scene, camera);
@@ -28,8 +30,8 @@ const WaveBackground = () => {
   const renderGround = () => {
     const boxes = [];
 
-    for (let x = -40; x <= 40; x++) {
-      for (let z = -40; z <= 40; z++) {
+    for (let x = -30; x <= 30; x++) {
+      for (let z = -30; z <= 30; z++) {
         const length = calculateLength(x, z);
 
         const box = createBoxGeometry({
@@ -52,7 +54,7 @@ const WaveBackground = () => {
     boxes.forEach(box => {
       const {x, z} = box.position;
 
-      box.position.y = calculateLength(x / 0.2, z / 0.2, time / 50) * 2;
+      box.position.y = calculateLength(x / 0.2, z / 0.2, time / 100) * 2;
     });
   };
 
@@ -64,9 +66,14 @@ const WaveBackground = () => {
     updateGround();
   };
 
+  // Register MouseMove Animation
+  const _onMouseMove = e => {
+    const {x, y} = {x: e.screenX, y: e.screenY};
+  };
+
   useEffect(() => {
-    const width = renderEl.clientWidth;
-    const height = renderEl.clientHeight;
+    width = renderEl.clientWidth;
+    height = renderEl.clientHeight;
 
     // Create Scene
     scene = new THREE.Scene();
@@ -93,7 +100,7 @@ const WaveBackground = () => {
     scene.add(directionalLight);
 
     // Create Fog
-    scene.fog = new THREE.Fog("black", 1, 7);
+    scene.fog = new THREE.Fog("black", 1, 6);
 
     // Render Ground
     boxes = renderGround();
