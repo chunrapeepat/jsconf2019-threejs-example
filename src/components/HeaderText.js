@@ -47,7 +47,7 @@ const Author = styled.a`
   font-weight: lighter;
   font-family: sans-serif;
 
-  margin-top: 30px;
+  margin-bottom: 10px;
 
   @media (max-width: 600px) {
     font-size: 1em;
@@ -60,9 +60,17 @@ const HeaderText = () => {
       <Heading>JSConf.Asia 2019</Heading>
       <Description>Example of THREE.js with React.js</Description>
 
-      <Author href="https://thechun.xyz" target="_blank">
-        By Chun Rapeepat
-      </Author>
+      <div style={{marginTop: 30}}>
+        <Author href="https://thechun.xyz" target="_blank">
+          By Chun Rapeepat
+        </Author>
+
+        <Author
+          href="https://github.com/chunza2542/jsconf2019-threejs-example"
+          target="_blank">
+          View Source Code on Github
+        </Author>
+      </div>
     </Container>
   );
 };
