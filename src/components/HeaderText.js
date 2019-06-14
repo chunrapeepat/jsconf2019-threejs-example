@@ -22,7 +22,7 @@ const Heading = styled.h1`
   margin: 0;
 
   @media (max-width: 600px) {
-    font-size: 2.5em;
+    font-size: 2.2em;
   }
 `;
 
@@ -34,7 +34,7 @@ const Description = styled.p`
   margin: 0;
 
   @media (max-width: 600px) {
-    font-size: 1.4em;
+    font-size: 1.2em;
   }
 `;
 
@@ -48,6 +48,10 @@ const Author = styled.a`
   font-family: sans-serif;
 
   margin-top: 30px;
+
+  @media (max-width: 600px) {
+    font-size: 1em;
+  }
 `;
 
 const HeaderText = () => {
