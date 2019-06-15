@@ -104,7 +104,7 @@ const WaveBackground = () => {
     requestAnimationFrame(animate);
   }, []);
 
-  return <Canvas ref={mount => (renderEl = mount)}></Canvas>;
+  return <div ref={mount => (renderEl = mount)}></div>;
 };
 
 export default WaveBackground;

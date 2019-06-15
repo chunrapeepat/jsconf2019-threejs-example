@@ -9,37 +9,30 @@ const Canvas = styled.div`
   height: 100vh;
 `;
 
-const calculateLength = (x, z, t = 0) => {
-  return (Math.cos(x / 5 + t) + Math.sin(z / 5 + t)) / 2;
-};
-
 // Green to Blue Color normalize
 const normalizeHsl = length => {
   return length * 90 + 90;
 };
 
-const WaveBackground = () => {
+const MusicVisualizer = () => {
   let renderEl;
-  let time = 0;
 
   let width, height;
   let scene, camera, renderer, boxes;
+
+  let directionalLight;
 
   const render = () => renderer.render(scene, camera);
 
   const renderGround = () => {
     const boxes = [];
 
-    for (let x = -30; x <= 30; x++) {
-      for (let z = -30; z <= 30; z++) {
-        const length = calculateLength(x, z);
-
+    for (let x = -16; x <= 16; x++) {
+      for (let z = -16; z <= 16; z++) {
         const box = createBoxGeometry({
-          position: [x * 0.2, length * 2, z * 0.2],
+          position: [x * 0.2, 1, z * 0.2],
           size: [0.2, 1, 0.2],
-          color: new THREE.Color(
-            `hsl(${normalizeHsl(Math.abs(length))}, 100%, 60%)`,
-          ),
+          color: new THREE.Color(`hsl(${100}, 100%, 60%)`),
         });
 
         scene.add(box);
@@ -50,20 +43,41 @@ const WaveBackground = () => {
     return boxes;
   };
 
-  const updateGround = () => {
-    boxes.forEach(box => {
-      const {x, z} = box.position;
+  const _soundAllow = stream => {
+    window.persistAudioStream = stream;
 
-      box.position.y = calculateLength(x / 0.2, z / 0.2, time / 100) * 2;
-    });
-  };
+    const audioContent = new AudioContext();
+    const audioStream = audioContent.createMediaStreamSource(stream);
+    const analyser = audioContent.createAnalyser();
+    audioStream.connect(analyser);
+    analyser.fftSize = 1024;
 
-  const animate = () => {
-    render();
-    requestAnimationFrame(animate);
+    const frequencyArray = new Uint8Array(analyser.frequencyBinCount);
 
-    time += 1;
-    updateGround();
+    function draw() {
+      analyser.getByteFrequencyData(frequencyArray);
+
+      let mean = 0;
+
+      boxes.forEach((box, i) => {
+        box.position.y = frequencyArray[i % 256] / 100;
+
+        mean += frequencyArray[i] || 0;
+
+        box.material.color.setHSL(box.position.y, 0.8, 0.5);
+      });
+
+      directionalLight.intensity = mean / 8000;
+
+      camera.fov = 75 + mean / 1000;
+      camera.updateProjectionMatrix();
+
+      // Update the wave
+      render();
+      requestAnimationFrame(draw);
+    }
+
+    draw();
   };
 
   useEffect(() => {
@@ -89,7 +103,7 @@ const WaveBackground = () => {
     renderEl.appendChild(renderer.domElement);
 
     // Add Hemisphere Light
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(-5, 10, -5);
     directionalLight.castShadow = true;
     scene.add(directionalLight);
@@ -100,11 +114,10 @@ const WaveBackground = () => {
     // Render Ground
     boxes = renderGround();
 
-    // Render!
-    requestAnimationFrame(animate);
+    navigator.getUserMedia({audio: true}, _soundAllow, console.error);
   }, []);
 
   return <Canvas ref={mount => (renderEl = mount)}></Canvas>;
 };
 
-export default WaveBackground;
+export default MusicVisualizer;

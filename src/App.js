@@ -3,6 +3,7 @@ import {createGlobalStyle} from "styled-components";
 
 import HeaderText from "./components/HeaderText";
 import WaveBackground from "./components/WaveBackground";
+import MusicVisualizer from "./components/MusicVisualizer";
 
 const GlobalStyle = createGlobalStyle`
   html, body {
@@ -16,8 +17,9 @@ function App() {
     <>
       <GlobalStyle />
 
-      <HeaderText />
-      <WaveBackground />
+      {/* <HeaderText /> */}
+      {/* <Waveackground /> */}
+      <MusicVisualizer />
     </>
   );
 }
