@@ -68,9 +68,7 @@ const MusicVisualizer = () => {
         mean += frequencyArray[i] || 0;
 
         let hslRange = (box.position.y / 2) * 0.4; // Range 0 -> 0.4
-        let baseHsl = ((counter % 750) / 750) * 0.6; // Range 0 -> (1 - hslRange)
-
-        console.log("debug", baseHsl);
+        let baseHsl = ((counter % 500) / 500) * 0.6; // Range 0 -> (1 - hslRange)
 
         box.material.color.setHSL(baseHsl + hslRange, 0.75, 0.5);
       });
